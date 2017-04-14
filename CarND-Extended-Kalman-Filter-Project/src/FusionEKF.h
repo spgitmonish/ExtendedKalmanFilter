@@ -11,38 +11,38 @@
 
 class FusionEKF {
 public:
-  /**
-  * Constructor.
-  */
+  // Constructor
   FusionEKF();
 
-  /**
-  * Destructor.
-  */
+  // Destructor
   virtual ~FusionEKF();
 
-  /**
-  * Run the whole flow of the Kalman Filter from here.
-  */
+  // Runs the whole flow of the Kalman Filter
   void ProcessMeasurement(const MeasurementPackage &measurement_pack);
 
-  /**
-  * Kalman Filter update and prediction math lives in here.
-  */
+  // Kalman Filter update and prediction math lives in object
   KalmanFilter ekf_;
 
 private:
-  // check whether the tracking toolbox was initiallized or not (first measurement)
+  // Check whether the tracking toolbox was initiallized or not (first measurement)
   bool is_initialized_;
 
-  // previous timestamp
+  // Previous timestamp
   long previous_timestamp_;
 
-  // tool object used to compute Jacobian and RMSE
+  // Tool object used to compute Jacobian and RMSE
   Tools tools;
+
+  // Measurement noise covariance matrix for laser/lidar
   Eigen::MatrixXd R_laser_;
+
+  // Measurement noise covariance matrix for radar
   Eigen::MatrixXd R_radar_;
+
+  // H measurement matrix for laser/lidar
   Eigen::MatrixXd H_laser_;
+
+  // H jacobian measurement matrix for radar(for non-linear to linear conversion)
   Eigen::MatrixXd Hj_;
 };
 

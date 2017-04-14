@@ -17,6 +17,7 @@ void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
   Q_ = Q_in;
 }
 
+// This step should be the same for both the sources
 void KalmanFilter::Predict() {
   /**
   TODO:
@@ -24,6 +25,7 @@ void KalmanFilter::Predict() {
   */
 }
 
+// This applies for Laser/Lidar
 void KalmanFilter::Update(const VectorXd &z) {
   /**
   TODO:
@@ -31,6 +33,7 @@ void KalmanFilter::Update(const VectorXd &z) {
   */
 }
 
+// This applies for Radar
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
   /**
   TODO:

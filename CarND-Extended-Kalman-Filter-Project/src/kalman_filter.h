@@ -5,32 +5,28 @@
 class KalmanFilter {
 public:
 
-  // state vector
+  // State vector
   Eigen::VectorXd x_;
 
-  // state covariance matrix
+  // State covariance matrix
   Eigen::MatrixXd P_;
 
-  // state transistion matrix
+  // State transistion matrix
   Eigen::MatrixXd F_;
 
-  // process covariance matrix
+  // Process noise covariance matrix
   Eigen::MatrixXd Q_;
 
-  // measurement matrix
+  // Measurement matrix
   Eigen::MatrixXd H_;
 
-  // measurement covariance matrix
+  // Measurement noise covariance matrix
   Eigen::MatrixXd R_;
 
-  /**
-   * Constructor
-   */
+  // Constructor
   KalmanFilter();
 
-  /**
-   * Destructor
-   */
+  // Destructor
   virtual ~KalmanFilter();
 
   /**
@@ -63,7 +59,6 @@ public:
    * @param z The measurement at k+1
    */
   void UpdateEKF(const Eigen::VectorXd &z);
-
 };
 
 #endif /* KALMAN_FILTER_H_ */
