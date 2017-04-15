@@ -134,23 +134,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
             dt_3/2 * noise_ax, 0, dt_2 * noise_ax, 0,
             0, dt_3/2 * noise_ay, 0, dt_2 * noise_ay;
 
-
-  // Radar measurements always need to be converted
-  if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR)
-  {
-    // Get the measurements
-    float r = measurement_pack.raw_measurements_[0];
-    float theta = measurement_pack.raw_measurements_[1];
-
-    // Convert radar from polar to cartesian coordinates and initialize state.
-    float px = r * cos(theta);
-    float py = r * sin(theta);
-
-    // Update px, px of state
-    ekf_.x_[0] = px;
-    ekf_.x_[1] = py;
-  }
-
   // Prediction step
   ekf_.Predict();
 
