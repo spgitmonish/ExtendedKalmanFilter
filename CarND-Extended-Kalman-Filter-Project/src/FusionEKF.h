@@ -44,6 +44,10 @@ private:
 
   // H jacobian measurement matrix for radar(for non-linear to linear conversion)
   Eigen::MatrixXd Hj_;
+
+  // Acceleration noise components(sigma)
+  float noise_ax;
+  float noise_ay;
 };
 
 #endif /* FusionEKF_H_ */

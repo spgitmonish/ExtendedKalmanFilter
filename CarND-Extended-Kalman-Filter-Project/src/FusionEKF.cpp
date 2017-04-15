@@ -2,6 +2,7 @@
 #include "tools.h"
 #include "Eigen/Dense"
 #include <iostream>
+#include <math.h>
 
 using namespace std;
 using Eigen::MatrixXd;
@@ -26,6 +27,11 @@ FusionEKF::FusionEKF() {
   // Jacobian Measurement matrix radar
   Hj_ = MatrixXd(3, 4);
 
+  // Acceleration noise components(sigma) for calculation of
+  // the process noise covariance matrix Q
+  noise_ax = 9;
+  noise_ay = 9;
+
   // Measurement noise covariance matrix, laser, values
   R_laser_ << 0.0225, 0,
               0, 0.0225;
@@ -34,7 +40,6 @@ FusionEKF::FusionEKF() {
   R_radar_ << 0.09, 0, 0,
               0, 0.0009, 0,
               0, 0, 0.09;
-
   /**
   TODO:
     * Finish initializing the FusionEKF.
@@ -48,30 +53,12 @@ FusionEKF::~FusionEKF() {}
 void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   // Check if the initialization is done i.e. this is the first measruement
   if (!is_initialized_) {
-    /*
-    TODO:
-      * Initialize the state ekf_.x_ with the first measurement.
-      * Create the process noise covariance matrix.
-      * Remember: you'll need to convert radar from polar to cartesian coordinates.
-    */
-
-    // First measurement
+    // Initialize the state ekf_.x_ with the first measurement.
     cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
     ekf_.x_ << 1, 1, 1, 1;
 
-    if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-      /**
-      Convert radar from polar to cartesian coordinates and initialize state.
-      */
-    }
-    else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
-      /**
-      Initialize state.
-      */
-    }
-
-    // done initializing, no need to predict or update
+    // Done initializing, no need to predict or update
     is_initialized_ = true;
     return;
   }
