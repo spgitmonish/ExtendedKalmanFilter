@@ -113,7 +113,7 @@ int main(int argc, char* argv[]) {
       // Push this measurement into the vector
       measurement_pack_list.push_back(meas_package);
     }
-    // RADAR MEASUREMENT
+    // RADAR MEASUREMENT, don't do anything for now
     else if (sensor_type.compare("R") == 0)
     {
       // Store the measurement source
