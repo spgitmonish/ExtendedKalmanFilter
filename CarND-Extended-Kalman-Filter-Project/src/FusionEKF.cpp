@@ -100,8 +100,12 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       ekf_.x_ << px, py, 0, 0;
     }
 
+    // Capture the timestamp for the next iteration
+		previous_timestamp_ = measurement_pack.timestamp_;
+
     // Done initializing, no need to predict or update
     is_initialized_ = true;
+
     return;
   }
 
@@ -113,12 +117,11 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
      * Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
    */
 
-  // Capture the timestamp for the next iteration
-  previous_timestamp_ = measurement_pack.timestamp_;
-
   // Compute the time elapsed between the current and previous measurements
   // dt - expressed in seconds
   float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
+
+  // Capture the timestamp for the next iteration
   previous_timestamp_ = measurement_pack.timestamp_;
 
   // Modify the F matrix so that the time is integrated
