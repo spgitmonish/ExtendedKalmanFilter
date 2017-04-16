@@ -19,14 +19,14 @@ The project can be cloned or downloaded [here](https://github.com/spgitmonish/Ex
 ## Basic Build Instructions
 
 1. Clone this repo.
-2. Make a build directory: `mkdir build && cd build`
+2. Make a build directory(delete any existing directories): `mkdir build && cd build`
 3. Compile: `cmake .. && make` 
    * On windows, you may need to run: `cmake .. -G "Unix Makefiles" && make`
 4. Run it: `./ExtendedKF path/to/input.txt path/to/output.txt`. You can find
    some sample inputs in 'data/'.
     - eg. `./ExtendedKF ../data/sample-laser-radar-measurement-data-1.txt output.txt`
 
-**NOTE**: Regardless of the changes you make, your project must be buildable using
+*NOTE*: Regardless of the changes you make, your project must be buildable using
 cmake and make!
 
 ## Project Folder Structure
@@ -34,7 +34,7 @@ cmake and make!
 
 	* *CmakeLists.txt*: Contains the configuration to run the project files using cmake and make.
 	* */data*: Contains the data input files used for testing the model.
-	* */Docs*: Documentation for generating additional data and also information about the input .txt files.
+	* */Docs*: Documentation for generating additional data and also information about the input `.txt` files.
 	* */ide_profiles*: For any IDE profiles created(optional).
 	* */src*: Contains all the source code
 		* `main.cpp` - Reads in data, calls a function to run the Kalman filter, calls a function to calculate RMSE.
@@ -45,7 +45,7 @@ cmake and make!
 * **CarND-Extended-Kalman-Filter-Project** - Utilities for generating additional data using matlab/python
 
 ## 2-D Visualizer
-Udacity has provided a way to visualize the effectiveness of the EKF model designed by the user. The simulator can be downloaded here
+Udacity has provided a way to visualize the effectiveness of a EKF model. The simulator can be downloaded here
 
 [Windows](https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58d07003_kalman-tracker-windows/kalman-tracker-windows.zip)
 
@@ -53,21 +53,23 @@ Udacity has provided a way to visualize the effectiveness of the EKF model desig
 
 [Linux](https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58d96544_kalman-tracker-linux/kalman-tracker-linux.zip)
 
-The Kalman Filter Tracker program is a visualization tool that plots noisy lidar and radar measurements as a simulated car drives in a figure eight pattern. The program can also record measurement data directly to a text file and then use a python script to call a compiled c++ Kalman Filter file to track estimated markers and RMSE values visually in real time.
+The Kalman Filter Tracker program is a visualization tool that plots noisy lidar and radar measurements as a simulated car drives in a figure eight pattern. The program can also record measurement data directly to a text file and then use a python script to call a compiled C++ Kalman Filter file to track estimated markers and RMSE values visually in real time.
 
 ### Usage instructions
-Copy and Save [kalman-tracker.py](https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58d07228_kalman-tracker/kalman-tracker.py) script code. This is used to communicate between the simulator and your compiled c++ kalman filter program. The script requires 1 argument which is the path to your compiled c++ file. Here is an example for how to call the script.
+Copy and Save [kalman-tracker.py](https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58d07228_kalman-tracker/kalman-tracker.py) script code. This is used to communicate between the simulator and your compiled c++ kalman filter program. The script requires 1 argument which is the path to your compiled C++ file. Here is an example for how to call the script.
 
 `python kalman_tracker.py ./main.out`
 
+*NOTE*: There might be additional libraries required for running socket communication. This starter kit by udacity has all the libraries(and more) required to run the above code. The starter kit can be found here: [Environment Setup](https://github.com/udacity/CarND-Term1-Starter-Kit)
+
 ### Running the program
-1. First open the simulator program (Preferred settings are windowed 1600 x 900 with Simple)
+1. First open the simulator program (Preferred: Resolution of *1600 x 900* , Graphics Quality set to *Simple*)
 2. Click **Record Data** in the simulator, a browser will then open to where you want to save your text file output. Make sure the path is the same as where `kalman_tracker.py` file is.
 3. Run `kalman_tracker.py` with path to your compiled c++ file.
 4. Click **Run** in the simulator to see estimation markers and RMSE values displayed in real time as measurement markers are collected.
 5. Experiment with turning on/off lidar and radar measurements on the lower left of the simulator to see how RMSE is effected.
 
-*Note about RMSE*: To display RMSE values on the simulator turn on the flag `DEBUG_SIMULATOR_OUTPUT` in `main.cpp`. That is the format expected by the simulator. 
+*Note about RMSE*: To display RMSE values on the simulator, turn on the flag `DEBUG_SIMULATOR_OUTPUT` in `main.cpp`. The output format expected by the simulator. 
 
 ## Expected output
 1. Screenshot of the terminal with the build, compile and test sequence. The RMSE output for different data sources can be seen in this screen shot.
