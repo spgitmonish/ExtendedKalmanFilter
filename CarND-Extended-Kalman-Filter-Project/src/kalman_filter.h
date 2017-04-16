@@ -49,6 +49,11 @@ public:
   void UpdateEKF(const Eigen::VectorXd &z);
 
 private:
+  // Private function to finish the remaining steps of the measurement update
+  void FinishUpdate(const Eigen::VectorXd &y_in,
+                    const Eigen::MatrixXd &H_in,
+                    const Eigen::MatrixXd &R_in);
+
   // Private Function to calculate the Jacobian matrix for the
   // predicted state
   Eigen::MatrixXd CalculateJacobian(const Eigen::VectorXd &x_state);

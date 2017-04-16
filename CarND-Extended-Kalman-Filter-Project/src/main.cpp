@@ -13,7 +13,9 @@ using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using std::vector;
 
-#define DEBUG_RMSE_OUTPUT 1
+// NOTE : Flip this to 1 to use it with the simulator.
+//        The simulator needs to be of size 1600x900 with Simple mode
+#define DEBUG_SIMULATOR_OUTPUT 0
 
 void check_arguments(int argc, char* argv[])
 {
@@ -231,8 +233,16 @@ int main(int argc, char* argv[])
 
   // Compute the accuracy (RMSE)
   Tools tools;
-#if DEBUG_RMSE_OUTPUT
-  cout << "Accuracy - RMSE:" << endl << tools.CalculateRMSE(estimations, ground_truth) << endl;
+  VectorXd rmse_output = tools.CalculateRMSE(estimations, ground_truth);
+
+#if DEBUG_SIMULATOR_OUTPUT
+  cout << "RMSE" << endl;
+  for(size_t rmse_index = 0; rmse_index < rmse_output.size(); rmse_index++)
+  {
+    cout << rmse_output(rmse_index) << endl;
+  }
+#else
+  cout << "Accuracy - RMSE:" << endl << rmse_output << endl;
 #endif
 
   // Close all the files

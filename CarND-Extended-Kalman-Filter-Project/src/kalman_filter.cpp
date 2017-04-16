@@ -7,7 +7,7 @@ KalmanFilter::KalmanFilter() {}
 
 KalmanFilter::~KalmanFilter() {}
 
-// This step should be the same for both the sources
+// This step should be the same for both the sources of measurements
 void KalmanFilter::Predict()
 {
   // State
@@ -22,23 +22,10 @@ void KalmanFilter::Predict()
 void KalmanFilter::Update(const VectorXd &z)
 {
   // Update the state by using Kalman Filter equations
-
   VectorXd y = z - H_laser_ * x_;
-	MatrixXd Ht = H_laser_.transpose();
-	MatrixXd S = H_laser_ * P_ * Ht + R_laser_;
-	MatrixXd Si = S.inverse();
-	MatrixXd PHt = P_ * Ht;
-	MatrixXd K = PHt * Si;
 
-	// New estimate
-	x_ = x_ + (K * y);
-
-  // Create the identity matrix of the same size
-	long x_size = x_.size();
-	MatrixXd I = MatrixXd::Identity(x_size, x_size);
-
-  // New covariance
-	P_ = (I - K * H_laser_) * P_;
+  // Finish the remaining update steps for the measurement update
+  FinishUpdate(y, H_laser_, R_laser_);
 }
 
 // This applies for Radar
@@ -54,24 +41,32 @@ void KalmanFilter::UpdateEKF(const VectorXd &z)
   // Calculate the jacobian measurement matrix
   Hj_radar_ = CalculateJacobian(x_);
 
+  // Finish the remaining update steps for the measurement update
+  FinishUpdate(y, Hj_radar_, R_radar_);
+}
+
+// Helper function to finish the remaining steps of the measurement update
+void KalmanFilter::FinishUpdate(const VectorXd &y_in,
+                                const MatrixXd &H_in,
+                                const MatrixXd &R_in)
+{
   // The remaining questions are the same
-	MatrixXd Hjt = Hj_radar_.transpose();
-	MatrixXd S = Hj_radar_ * P_ * Hjt + R_radar_;
+	MatrixXd Ht = H_in.transpose();
+	MatrixXd S = H_in * P_ * Ht + R_in;
 	MatrixXd Si = S.inverse();
-	MatrixXd PHt = P_ * Hjt;
+	MatrixXd PHt = P_ * Ht;
 	MatrixXd K = PHt * Si;
 
 	// New estimate
-	x_ = x_ + (K * y);
+	x_ = x_ + (K * y_in);
 
   // Create the identity matrix of the same size
 	long x_size = x_.size();
 	MatrixXd I = MatrixXd::Identity(x_size, x_size);
 
   // New covariance
-	P_ = (I - K * Hj_radar_) * P_;
+	P_ = (I - K * H_in) * P_;
 }
-
 // Function to calculate h(x') for cartesian to polar conversion
 VectorXd KalmanFilter::CartesianToPolar(const VectorXd &x_state)
 {
