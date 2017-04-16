@@ -11,7 +11,8 @@
 
 # define DEBUG_EKF_OUTPUT 0
 
-class FusionEKF {
+class FusionEKF
+{
 public:
   // Constructor
   FusionEKF();

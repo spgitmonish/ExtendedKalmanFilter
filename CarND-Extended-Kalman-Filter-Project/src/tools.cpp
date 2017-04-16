@@ -9,15 +9,17 @@ Tools::Tools() {}
 
 Tools::~Tools() {}
 
+// Function definition which calculates RMSE
 VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
-                              const vector<VectorXd> &ground_truth) {
+                              const vector<VectorXd> &ground_truth)
+{
   // Vector storing the results of the calculation for each pass
   VectorXd rmse(4);
   rmse << 0,0,0,0;
 
   // Check the validity of the following inputs:
-  //  * the estimation vector size should not be zero
-  //  * the estimation vector size should equal ground truth vector size
+  //  * The estimation vector size should not be zero
+  //  * The estimation vector size should equal ground truth vector size
   if((estimations.size() == 0) || (estimations.size() != ground_truth.size()))
   {
     std::cout << "Invalid estimation or ground_truth data" << std::endl;

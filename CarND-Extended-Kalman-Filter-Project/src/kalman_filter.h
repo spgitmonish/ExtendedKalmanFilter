@@ -3,9 +3,9 @@
 #include "Eigen/Dense"
 #include <math.h>
 
-class KalmanFilter {
+class KalmanFilter
+{
 public:
-
   // State vector
   Eigen::VectorXd x_;
 

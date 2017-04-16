@@ -8,7 +8,8 @@ KalmanFilter::KalmanFilter() {}
 KalmanFilter::~KalmanFilter() {}
 
 // This step should be the same for both the sources
-void KalmanFilter::Predict() {
+void KalmanFilter::Predict()
+{
   // State
   x_ = F_ * x_;
 	MatrixXd Ft = F_.transpose();
@@ -18,7 +19,8 @@ void KalmanFilter::Predict() {
 }
 
 // This applies for Laser/Lidar
-void KalmanFilter::Update(const VectorXd &z) {
+void KalmanFilter::Update(const VectorXd &z)
+{
   // Update the state by using Kalman Filter equations
 
   VectorXd y = z - H_laser_ * x_;
@@ -40,7 +42,8 @@ void KalmanFilter::Update(const VectorXd &z) {
 }
 
 // This applies for Radar
-void KalmanFilter::UpdateEKF(const VectorXd &z) {
+void KalmanFilter::UpdateEKF(const VectorXd &z)
+{
   // Update the state by using Extended Kalman Filter equations
   // h(x') to map from cartesian to polar co-ordinates
   VectorXd h_x = CartesianToPolar(x_);
@@ -70,7 +73,8 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 }
 
 // Function to calculate h(x') for cartesian to polar conversion
-VectorXd KalmanFilter::CartesianToPolar(const VectorXd &x_state) {
+VectorXd KalmanFilter::CartesianToPolar(const VectorXd &x_state)
+{
   // h_x is a 3 element vector
   VectorXd h_x = VectorXd(3);
 
@@ -99,7 +103,8 @@ VectorXd KalmanFilter::CartesianToPolar(const VectorXd &x_state) {
 }
 
 // Function to calculate the jacobian for the predicted state passed
-MatrixXd KalmanFilter::CalculateJacobian(const VectorXd &x_state) {
+MatrixXd KalmanFilter::CalculateJacobian(const VectorXd &x_state)
+{
   // Hj is a 3x4 matrix
   MatrixXd Hj(3,4);
 

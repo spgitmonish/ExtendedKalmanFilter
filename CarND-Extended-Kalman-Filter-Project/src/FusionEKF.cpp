@@ -10,7 +10,8 @@ using Eigen::VectorXd;
 using std::vector;
 
 // Constructor
-FusionEKF::FusionEKF() {
+FusionEKF::FusionEKF()
+{
   is_initialized_ = false;
 
   previous_timestamp_ = 0;
@@ -62,20 +63,16 @@ FusionEKF::FusionEKF() {
   // the process noise covariance matrix Q
   noise_ax = 9;
   noise_ay = 9;
-
-  /**
-  TODO:
-    * Finish initializing the FusionEKF.
-    * Set the process and measurement noises
-  */
 }
 
 // Destructor
 FusionEKF::~FusionEKF() {}
 
-void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
+void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
+{
   // Check if the initialization is done i.e. this is the first measruement
-  if (!is_initialized_) {
+  if (!is_initialized_)
+  {
     // Initialize the state ekf_.x_ with the first measurement.
     ekf_.x_ = VectorXd(4);
 
@@ -140,10 +137,13 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   }
 
   // Update step
-  if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
+  if (measurement_pack.sensor_type_ == MeasurementPackage::LASER)
+  {
     // Laser updates
     ekf_.Update(measurement_pack.raw_measurements_);
-  } else {
+  }
+  else
+  {
     // Radar updates
     ekf_.UpdateEKF(measurement_pack.raw_measurements_);
   }

@@ -3,21 +3,16 @@
 #include <vector>
 #include "Eigen/Dense"
 
-class Tools {
+class Tools
+{
 public:
-  /**
-  * Constructor.
-  */
+  // Constructor
   Tools();
 
-  /**
-  * Destructor.
-  */
+  // Destructor
   virtual ~Tools();
 
-  /**
-  * A helper method to calculate RMSE.
-  */
+  // Helper function for calculation of RMSE
   Eigen::VectorXd CalculateRMSE(const std::vector<Eigen::VectorXd> &estimations, const std::vector<Eigen::VectorXd> &ground_truth);
 };
 
