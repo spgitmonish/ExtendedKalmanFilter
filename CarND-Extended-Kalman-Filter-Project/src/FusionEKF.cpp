@@ -109,43 +109,35 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     return;
   }
 
-  /**
-   TODO:
-     * Update the state transition matrix F according to the new elapsed time.
-      - Time is measured in seconds.
-     * Update the process noise covariance matrix.
-     * Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
-   */
+  // Check whether the timestamps match, if they do then we have sensor
+  // measurements at the same time. So prediction needs to be done only
+  // once.
+  if(measurement_pack.timestamp_ != previous_timestamp_)
+  {
+    // Compute the time elapsed between the current and previous measurements
+    // dt - expressed in seconds
+    float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
 
-  // Compute the time elapsed between the current and previous measurements
-  // dt - expressed in seconds
-  float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
+    // Capture the timestamp for the next iteration
+    previous_timestamp_ = measurement_pack.timestamp_;
 
-  // Capture the timestamp for the next iteration
-  previous_timestamp_ = measurement_pack.timestamp_;
+    // Modify the F matrix so that the time is integrated
+    ekf_.F_(0, 2) = dt;
+    ekf_.F_(1, 3) = dt;
 
-  // Modify the F matrix so that the time is integrated
-  ekf_.F_(0, 2) = dt;
-  ekf_.F_(1, 3) = dt;
+    // Create the process noise covariance matrix.
+    float dt_2 = pow(dt, 2);
+    float dt_3 = pow(dt, 3);
+    float dt_4 = pow(dt, 4);
 
-  // Create the process noise covariance matrix.
-  float dt_2 = pow(dt, 2);
-  float dt_3 = pow(dt, 3);
-  float dt_4 = pow(dt, 4);
+    ekf_.Q_ << dt_4/4 * noise_ax, 0, dt_3/2 * noise_ax, 0,
+               0, dt_4/4 * noise_ay, 0, dt_3/2 * noise_ay,
+               dt_3/2 * noise_ax, 0, dt_2 * noise_ax, 0,
+               0, dt_3/2 * noise_ay, 0, dt_2 * noise_ay;
 
-  ekf_.Q_ << dt_4/4 * noise_ax, 0, dt_3/2 * noise_ax, 0,
-             0, dt_4/4 * noise_ay, 0, dt_3/2 * noise_ay,
-             dt_3/2 * noise_ax, 0, dt_2 * noise_ax, 0,
-             0, dt_3/2 * noise_ay, 0, dt_2 * noise_ay;
-
-  // Prediction step
-  ekf_.Predict();
-
-  /**
-   TODO:
-     * Use the sensor type to perform the update step.
-     * Update the state and covariance matrices.
-   */
+    // Prediction step
+    ekf_.Predict();
+  }
 
   // Update step
   if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
@@ -157,6 +149,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   }
 
   // Print the output
+#if DEBUG_EKF_OUTPUT
   cout << "x_ = " << ekf_.x_ << endl;
   cout << "P_ = " << ekf_.P_ << endl;
+#endif
 }

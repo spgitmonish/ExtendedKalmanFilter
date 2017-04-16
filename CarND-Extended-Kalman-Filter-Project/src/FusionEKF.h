@@ -9,6 +9,8 @@
 #include "kalman_filter.h"
 #include "tools.h"
 
+# define DEBUG_EKF_OUTPUT 0
+
 class FusionEKF {
 public:
   // Constructor

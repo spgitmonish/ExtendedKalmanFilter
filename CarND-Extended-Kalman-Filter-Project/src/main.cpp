@@ -13,6 +13,8 @@ using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using std::vector;
 
+#define DEBUG_RMSE_OUTPUT 1
+
 void check_arguments(int argc, char* argv[]) {
   string usage_instructions = "Usage instructions: ";
   usage_instructions += argv[0];
@@ -220,7 +222,9 @@ int main(int argc, char* argv[]) {
 
   // Compute the accuracy (RMSE)
   Tools tools;
+#if DEBUG_RMSE_OUTPUT
   cout << "Accuracy - RMSE:" << endl << tools.CalculateRMSE(estimations, ground_truth) << endl;
+#endif
 
   // Close all the files
   if (out_file_.is_open()) {
