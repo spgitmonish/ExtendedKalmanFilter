@@ -120,7 +120,7 @@ MatrixXd KalmanFilter::CalculateJacobian(const VectorXd &x_state) {
     // The state vector won't get updated with the new
     // measurement update.
     Hj << 0, 0, 0, 0,
-          1e-9, 1e-9, 0, 0,
+          0, 0, 0, 0,
           0, 0, 0, 0;
 
     return Hj;
