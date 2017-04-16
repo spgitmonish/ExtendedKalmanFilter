@@ -18,11 +18,17 @@ public:
   // Process noise covariance matrix
   Eigen::MatrixXd Q_;
 
-  // Measurement matrix
-  Eigen::MatrixXd H_;
+  // Measurement matrix for Laser
+  Eigen::MatrixXd H_laser_;
 
-  // Measurement noise covariance matrix
-  Eigen::MatrixXd R_;
+  // Measurement Jacobian matrix for Radar
+  Eigen::MatrixXd Hj_radar_;
+
+  // Measurement noise covariance matrix for Laser
+  Eigen::MatrixXd R_laser_;
+
+  // Measurement noise covariance matrix for Radar
+  Eigen::MatrixXd R_radar_;
 
   // Constructor
   KalmanFilter();
@@ -30,34 +36,16 @@ public:
   // Destructor
   virtual ~KalmanFilter();
 
-  /**
-   * Init Initializes Kalman filter
-   * @param x_in Initial state
-   * @param P_in Initial state covariance
-   * @param F_in Transition matrix
-   * @param H_in Measurement matrix
-   * @param R_in Measurement covariance matrix
-   * @param Q_in Process covariance matrix
-   */
-  void Init(Eigen::MatrixXd &H_in, Eigen::MatrixXd &R_in);
+  // Predict Predicts the state and the state covariance
+	// using the process model
+	void Predict();
 
-  /**
-   * Prediction Predicts the state and the state covariance
-   * using the process model
-   * @param delta_T Time between k and k+1 in s
-   */
-  void Predict();
-
-  /**
-   * Updates the state by using standard Kalman Filter equations
-   * @param z The measurement at k+1
-   */
+	// Updates the state by using Kalman Filter and
+  // the measurement(z) at k+1
   void Update(const Eigen::VectorXd &z);
 
-  /**
-   * Updates the state by using Extended Kalman Filter equations
-   * @param z The measurement at k+1
-   */
+  // Updates the state by using Extended Kalman Filter and
+  // the measurement(z) at k+1
   void UpdateEKF(const Eigen::VectorXd &z);
 
 private:

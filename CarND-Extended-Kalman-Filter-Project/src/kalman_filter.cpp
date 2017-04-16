@@ -7,11 +7,6 @@ KalmanFilter::KalmanFilter() {}
 
 KalmanFilter::~KalmanFilter() {}
 
-void KalmanFilter::Init(MatrixXd &H_in, MatrixXd &R_in) {
-  H_ = H_in;
-  R_ = R_in;
-}
-
 // This step should be the same for both the sources
 void KalmanFilter::Predict() {
   // State
@@ -26,9 +21,9 @@ void KalmanFilter::Predict() {
 void KalmanFilter::Update(const VectorXd &z) {
   // Update the state by using Kalman Filter equations
 
-  VectorXd y = z - H_ * x_;
-	MatrixXd Ht = H_.transpose();
-	MatrixXd S = H_ * P_ * Ht + R_;
+  VectorXd y = z - H_laser_ * x_;
+	MatrixXd Ht = H_laser_.transpose();
+	MatrixXd S = H_laser_ * P_ * Ht + R_laser_;
 	MatrixXd Si = S.inverse();
 	MatrixXd PHt = P_ * Ht;
 	MatrixXd K = PHt * Si;
@@ -41,7 +36,7 @@ void KalmanFilter::Update(const VectorXd &z) {
 	MatrixXd I = MatrixXd::Identity(x_size, x_size);
 
   // New covariance
-	P_ = (I - K * H_) * P_;
+	P_ = (I - K * H_laser_) * P_;
 }
 
 // This applies for Radar
@@ -54,13 +49,13 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   VectorXd y = z - h_x;
 
   // Calculate the jacobian measurement matrix
-  H_ = CalculateJacobian(x_);
+  Hj_radar_ = CalculateJacobian(x_);
 
   // The remaining questions are the same
-	MatrixXd Ht = H_.transpose();
-	MatrixXd S = H_ * P_ * Ht + R_;
+	MatrixXd Hjt = Hj_radar_.transpose();
+	MatrixXd S = Hj_radar_ * P_ * Hjt + R_radar_;
 	MatrixXd Si = S.inverse();
-	MatrixXd PHt = P_ * Ht;
+	MatrixXd PHt = P_ * Hjt;
 	MatrixXd K = PHt * Si;
 
 	// New estimate
@@ -71,7 +66,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 	MatrixXd I = MatrixXd::Identity(x_size, x_size);
 
   // New covariance
-	P_ = (I - K * H_) * P_;
+	P_ = (I - K * Hj_radar_) * P_;
 }
 
 // Function to calculate h(x') for cartesian to polar conversion
@@ -98,7 +93,7 @@ VectorXd KalmanFilter::CartesianToPolar(const VectorXd &x_state) {
   float sqrt_px_py = sqrt(px_2_py_2);
 
   // h(x')
-  h_x << sqrt_px_py, atan2(px, py), (px*vx + py*vy)/sqrt_px_py;
+  h_x << sqrt_px_py, atan2(py, px), (px*vx + py*vy)/sqrt_px_py;
 
   return h_x;
 }
@@ -125,7 +120,7 @@ MatrixXd KalmanFilter::CalculateJacobian(const VectorXd &x_state) {
     // The state vector won't get updated with the new
     // measurement update.
     Hj << 0, 0, 0, 0,
-          0, 0, 0, 0,
+          1e-9, 1e-9, 0, 0,
           0, 0, 0, 0;
 
     return Hj;

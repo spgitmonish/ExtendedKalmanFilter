@@ -30,21 +30,6 @@ private:
   // Previous timestamp
   long previous_timestamp_;
 
-  // Tool object used to compute Jacobian and RMSE
-  Tools tools;
-
-  // Measurement noise covariance matrix for laser/lidar
-  Eigen::MatrixXd R_laser_;
-
-  // Measurement noise covariance matrix for radar
-  Eigen::MatrixXd R_radar_;
-
-  // H measurement matrix for laser/lidar
-  Eigen::MatrixXd H_laser_;
-
-  // H jacobian measurement matrix for radar(for non-linear to linear conversion)
-  Eigen::MatrixXd Hj_;
-
   // Acceleration noise components(sigma)
   float noise_ax;
   float noise_ay;

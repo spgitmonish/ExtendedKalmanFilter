@@ -35,26 +35,28 @@ FusionEKF::FusionEKF() {
   // The process noise covariance matrix 'Q'
   ekf_.Q_ = MatrixXd(4, 4);
 
-  // Initializing measurement noise covariance matrix for Laser
-  R_laser_ = MatrixXd(2, 2);
-
-  // For Radar
-  R_radar_ = MatrixXd(3, 3);
-
   // Measurement matrix for Laser
-  H_laser_ = MatrixXd(2, 4);
+  ekf_.H_laser_ = MatrixXd(2, 4);
+  ekf_.H_laser_ << 1, 0, 0, 0,
+                   0, 1, 0, 0;
 
-  // Jacobian Measurement matrix radar
-  Hj_ = MatrixXd(3, 4);
+  // Jacobian Measurement matrix for Radar
+  // NOTE: This matrix doesn't need to be initialized because
+	//       h(x') function is used in the error calculation step
+	//       i.e. calculation of y = z - h(x').
+  //       The Jacobian Matrix is calculated on the fly
+  ekf_.Hj_radar_ = MatrixXd(3, 4);
 
-  // Measurement noise covariance matrix, laser, values
-  R_laser_ << 0.0225, 0,
-              0, 0.0225;
+  // Initializing measurement noise covariance matrix for Laser
+  ekf_.R_laser_ = MatrixXd(2, 2);
+  ekf_.R_laser_ << 0.0225, 0,
+                   0, 0.0225;
 
-  // Measurement noise covariance matrix, radar, values
-  R_radar_ << 0.09, 0, 0,
-              0, 0.0009, 0,
-              0, 0, 0.09;
+  // Initializing measurement noise covariance matrix for Radar
+  ekf_.R_radar_ = MatrixXd(3, 3);
+  ekf_.R_radar_ << 0.09, 0, 0,
+                   0, 0.0009, 0,
+                   0, 0, 0.09;
 
   // Acceleration noise components(sigma) for calculation of
   // the process noise covariance matrix Q
@@ -75,11 +77,16 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   // Check if the initialization is done i.e. this is the first measruement
   if (!is_initialized_) {
     // Initialize the state ekf_.x_ with the first measurement.
-    cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
 
+    // Lidar measurement
+    if (measurement_pack.sensor_type_ == MeasurementPackage::LASER)
+    {
+      // Set the state with the initial location and zero velocity
+      ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
+    }
     // Radar measurement
-    if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR)
+    else if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR)
     {
       // Get the measurements
       float r = measurement_pack.raw_measurements_[0];
@@ -91,12 +98,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
       // The initial velocity is zero as the sensors don't measure velocity
       ekf_.x_ << px, py, 0, 0;
-    }
-    // Lidar measurement
-    else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER)
-    {
-      // Set the state with the initial location and zero velocity
-      ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
     }
 
     // Done initializing, no need to predict or update
@@ -130,14 +131,12 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   float dt_4 = pow(dt, 4);
 
   ekf_.Q_ << dt_4/4 * noise_ax, 0, dt_3/2 * noise_ax, 0,
-            0, dt_4/4 * noise_ay, 0, dt_3/2 * noise_ay,
-            dt_3/2 * noise_ax, 0, dt_2 * noise_ax, 0,
-            0, dt_3/2 * noise_ay, 0, dt_2 * noise_ay;
+             0, dt_4/4 * noise_ay, 0, dt_3/2 * noise_ay,
+             dt_3/2 * noise_ax, 0, dt_2 * noise_ax, 0,
+             0, dt_3/2 * noise_ay, 0, dt_2 * noise_ay;
 
   // Prediction step
   ekf_.Predict();
-
-  // Update step
 
   /**
    TODO:
@@ -145,24 +144,13 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
      * Update the state and covariance matrices.
    */
 
-  if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-    // Initialize the EKF filter with the appropriate matrices
-    ekf_.Init(Hj_, R_radar_);
-
-    // Radar updates
-    ekf_.UpdateEKF(measurement_pack.raw_measurements_);
-
-    // Update the FusionEKF fields for later reference
-    Hj_ = ekf_.H_;
-  } else {
-    // Initialize the EKF filter with the appropriate matrices
-    ekf_.Init(H_laser_, R_laser_);
-
+  // Update step
+  if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
     // Laser updates
     ekf_.Update(measurement_pack.raw_measurements_);
-
-    // Update the FusionEKF fields for later reference
-    H_laser_ = ekf_.H_;
+  } else {
+    // Radar updates
+    ekf_.UpdateEKF(measurement_pack.raw_measurements_);
   }
 
   // Print the output

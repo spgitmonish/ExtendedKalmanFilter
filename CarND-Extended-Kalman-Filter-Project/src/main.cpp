@@ -178,7 +178,7 @@ int main(int argc, char* argv[]) {
   size_t N = measurement_pack_list.size();
 
   // For each of the measurements in the vector
-  for (size_t k = 0; k < N; ++k)
+  for (size_t k = 0; k < N; k++)
   {
     // Start filtering from the second frame, so the initial state needs to be
     // set in the EKF object routines as the speed is unknown in the first frame
