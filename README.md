@@ -21,7 +21,7 @@ The project can be cloned or downloaded [here](https://github.com/spgitmonish/Ex
 1. Clone this repo.
 2. Make a build directory(delete any existing directories): `mkdir build && cd build`
 3. Compile: `cmake .. && make` 
-   * On windows, you may need to run: `cmake .. -G "Unix Makefiles" && make`
+   * On windows, you may need to run: `cmake .. -G "MinGW Makefiles" && mingw32-make`
 4. Run it: `./ExtendedKF path/to/input.txt path/to/output.txt`. You can find
    some sample inputs in 'data/'.
     - eg. `./ExtendedKF ../data/sample-laser-radar-measurement-data-1.txt output.txt`
