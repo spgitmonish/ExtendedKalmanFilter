@@ -1,1 +1,1 @@
-ide_profiles/* linguist-vendored
+*.rb linguist-language=C++
